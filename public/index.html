@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth Patchnotes v2025.6</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: #e0e6ed;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, #1a237e 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, #311b92 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, #4a148c 0%, transparent 50%);
+            animation: bgPulse 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .title {
+            font-size: 3.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #9ca3af;
+            font-weight: 300;
+        }
+
+        .version {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            border: 1px solid rgba(102, 126, 234, 0.5);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            backdrop-filter: blur(10px);
+            color: #e0e6ed;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .filter-btn.active {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+            color: #fff;
+        }
+
+        .news-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .news-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .news-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .news-item:hover::before {
+            opacity: 1;
+        }
+
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .news-category {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .category-politique { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .category-technologie { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .category-economie { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .category-environnement { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .category-science { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+        .category-culture { background: rgba(251, 146, 60, 0.2); color: #fb923c; }
+        .category-sport { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+
+        .news-date {
+            font-size: 0.85em;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .news-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.3;
+            background: linear-gradient(135deg, #e0e6ed, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .news-content {
+            color: #d1d5db;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .news-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            font-size: 0.9em;
+            color: #9ca3af;
+        }
+
+        .source-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .source-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            flex-wrap: wrap;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.1);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95em;
+            color: #9ca3af;
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .time-value {
+            color: #22c55e;
+            font-weight: 700;
+            font-size: 1.1em;
+            animation: pulse 2s infinite;
+        }
+
+        .auto-refresh-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .refresh-dot {
+            width: 8px;
+            height: 8px;
+            background: #f59e0b;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .countdown {
+            font-weight: 600;
+            color: #f59e0b;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2.5em; }
+            .stats-bar { 
+                flex-direction: column; 
+                gap: 15px;
+                padding: 15px;
+            }
+            .stat-item {
+                justify-content: center;
+                min-width: 200px;
+            }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1 class="title">🌍 Earth Patchnotes</h1>
+            <p class="subtitle">Les mises à jour importantes de notre planète</p>
+            <span class="version" id="versionBadge">v2025.6.9 - Chargement...</span>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                📊 <span class="stat-value" id="totalArticles">0</span> articles
+            </div>
+            <div class="stat-item">
+                🕐 <span class="time-value" id="currentTime">--:--:--</span>
+            </div>
+            <div class="stat-item">
+                📡 <span class="stat-value" id="currentSource">Chargement...</span>
+            </div>
+            <div class="auto-refresh-indicator">
+                <div class="refresh-dot"></div>
+                <span>Actualisation auto dans <span class="countdown" id="countdown">60:00</span></span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="filter-btn active" data-category="all">🌐 Tout</button>
+            <button class="filter-btn" data-category="politique">🏛️ Politique</button>
+            <button class="filter-btn" data-category="technologie">💻 Technologie</button>
+            <button class="filter-btn" data-category="economie">💰 Économie</button>
+            <button class="filter-btn" data-category="environnement">🌱 Environnement</button>
+            <button class="filter-btn" data-category="science">🔬 Science</button>
+            <button class="filter-btn" data-category="culture">🎭 Culture</button>
+            <button class="filter-btn" data-category="sport">⚽ Sport</button>
+        </div>
+
+        <div id="newsContainer" class="news-container">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Chargement des actualités automatiques...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allNews = [];
+        let activeFilter = 'all';
+        let currentSource = 'Chargement...';
+        let autoRefreshInterval;
+        let countdownInterval;
+        let secondsUntilRefresh = 3600; // 1 heure en secondes
+        let displayedArticles = 15; // Nombre d'articles affichés initialement
+        let isLoading = false; // Pour éviter les chargements multiples
+
+        // Configuration
+        const API_URL = '';
+
+        // Fonctions principales
+        async function loadNews() {
+            console.log('🔄 Chargement des actualités automatiques...');
+            
+            try {
+                const response = await fetch(`${API_URL}/news`);
+                const data = await response.json();
+                
+                if (response.ok && data.status === 'ok') {
+                    allNews = data.articles
+                        .filter(article => article.title && article.description)
+                        .map(article => ({
+                            category: article.category || determineCategory(article.title + ' ' + article.description),
+                            title: article.title,
+                            content: article.description,
+                            date: article.publishedAt,
+                            source: article.url,
+                            sourceName: article.source?.name || 'Source inconnue'
+                        }));
+                    
+                    currentSource = data.source || 'RSS Français automatiques';
+                    console.log(`✅ ${allNews.length} actualités chargées depuis ${currentSource}`);
+                    displayedArticles = 15; // Reset le nombre d'articles affichés
+                    updateStats();
+                    displayNews();
+                    resetAutoRefresh();
+                } else {
+                    throw new Error(data.error || 'Erreur de format des données');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('newsContainer').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #ef4444;">
+                        <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                        <h3>Erreur de connexion</h3>
+                        <p style="margin-top: 10px; color: #9ca3af;">
+                            Impossible de se connecter au serveur RSS automatique.<br>
+                            Vérifiez que votre serveur fonctionne sur ${API_URL}
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalArticles').textContent = allNews.length;
+            document.getElementById('currentSource').textContent = currentSource;
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('fr-FR');
+            document.getElementById('currentTime').textContent = timeString;
+            
+            // Afficher seulement la date au format AAAA.M.J
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1; // +1 car getMonth() commence à 0
+            const day = now.getDate();
+            
+            document.getElementById('versionBadge').textContent = `v${year}.${month}.${day}`;
+        }
+
+        function updateCountdown() {
+            const minutes = Math.floor(secondsUntilRefresh / 60);
+            const seconds = secondsUntilRefresh % 60;
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('countdown').textContent = timeString;
+            
+            secondsUntilRefresh--;
+            
+            if (secondsUntilRefresh < 0) {
+                loadNews(); // Recharger les actualités
+            }
+        }
+
+        function resetAutoRefresh() {
+            secondsUntilRefresh = 3600; // Reset à 1 heure
+            console.log('⏰ Prochain rafraîchissement dans 1 heure');
+        }
+
+        function startAutoRefresh() {
+            // Actualiser l'heure toutes les secondes
+            setInterval(updateTime, 1000);
+            
+            // Actualiser le countdown toutes les secondes
+            countdownInterval = setInterval(updateCountdown, 1000);
+            
+            // Actualiser les actualités toutes les heures
+            autoRefreshInterval = setInterval(() => {
+                console.log('🔄 Actualisation automatique...');
+                loadNews();
+            }, 3600000); // 3600000 ms = 1 heure
+        }
+
+        // Gestion des filtres avec reset du nombre d'articles affichés
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                activeFilter = this.dataset.category;
+                displayedArticles = 15; // Reset à 15 articles lors du changement de filtre
+                displayNews();
+            });
+        });
+
+        function determineCategory(text) {
+            const lowerText = text.toLowerCase();
+            
+            if (lowerText.includes('technolog') || lowerText.includes('ia') || lowerText.includes('intelligence artificielle') || lowerText.includes('numérique') || lowerText.includes('internet')) {
+                return 'technologie';
+            } else if (lowerText.includes('économ') || lowerText.includes('bourse') || lowerText.includes('euro') || lowerText.includes('inflation') || lowerText.includes('entreprise')) {
+                return 'economie';
+            } else if (lowerText.includes('sport') || lowerText.includes('football') || lowerText.includes('tennis') || lowerText.includes('basket') || lowerText.includes('olympic')) {
+                return 'sport';
+            } else if (lowerText.includes('scienc') || lowerText.includes('recherch') || lowerText.includes('découvert') || lowerText.includes('étude') || lowerText.includes('médecin')) {
+                return 'science';
+            } else if (lowerText.includes('cultur') || lowerText.includes('film') || lowerText.includes('music') || lowerText.includes('festival') || lowerText.includes('livre')) {
+                return 'culture';
+            } else if (lowerText.includes('climat') || lowerText.includes('écolog') || lowerText.includes('environn') || lowerText.includes('carbone') || lowerText.includes('énergie')) {
+                return 'environnement';
+            } else {
+                return 'politique';
+            }
+        }
+
+        function displayNews() {
+            const container = document.getElementById('newsContainer');
+            const filteredNews = activeFilter === 'all' 
+                ? allNews 
+                : allNews.filter(news => news.category === activeFilter);
+
+            if (filteredNews.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: #6b7280;">
+                        <div style="font-size: 4em; margin-bottom: 20px; opacity: 0.3;">📭</div>
+                        <h3>Aucune actualité dans cette catégorie</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            // Afficher seulement les articles jusqu'à displayedArticles
+            const articlesToShow = filteredNews.slice(0, displayedArticles);
+            
+            container.innerHTML = articlesToShow.map(news => `
+                <div class="news-item">
+                    <div class="news-header">
+                        <span class="news-category category-${news.category}">
+                            ${getCategoryEmoji(news.category)} ${getCategoryName(news.category)}
+                        </span>
+                        <span class="news-date">${formatDate(news.date)}</span>
+                    </div>
+                    <h2 class="news-title">${news.title}</h2>
+                    <p class="news-content">${news.content}</p>
+                    <div class="news-footer">
+                        <span>📍 ${news.sourceName}</span>
+                        <a href="${news.source}" target="_blank" class="source-link">
+                            → Lire l'article
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Ajouter un indicateur de chargement si il y a plus d'articles
+            if (filteredNews.length > displayedArticles) {
+                container.innerHTML += `
+                    <div id="loadMoreIndicator" style="text-align: center; padding: 30px; color: #9ca3af;">
+                        <div style="display: inline-block; padding: 15px 30px; background: rgba(102, 126, 234, 0.1); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" onclick="loadMoreArticles()">
+                            📚 Charger plus d'articles (${filteredNews.length - displayedArticles} restants)
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function loadMoreArticles() {
+            if (isLoading) return;
+            
+            isLoading = true;
+            const indicator = document.getElementById('loadMoreIndicator');
+            
+            if (indicator) {
+                indicator.innerHTML = `
+                    <div style="display: inline-block; padding: 15px 30px;">
+                        <div style="display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(102, 126, 234, 0.3); border-radius: 50%; border-top-color: #667eea; animation: spin 1s ease-in-out infinite; margin-right: 10px;"></div>
+                        Chargement...
+                    </div>
+                `;
+            }
+            
+            // Simuler un petit délai pour l'UX
+            setTimeout(() => {
+                displayedArticles += 10; // Charger 10 articles de plus
+                displayNews();
+                isLoading = false;
+            }, 500);
+        }
+        
+        // Détection du scroll pour chargement automatique
+        function setupInfiniteScroll() {
+            window.addEventListener('scroll', () => {
+                if (isLoading) return;
+                
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                
+                // Si on est à 200px du bas
+                if (scrollTop + windowHeight >= documentHeight - 200) {
+                    const filteredNews = activeFilter === 'all' 
+                        ? allNews 
+                        : allNews.filter(news => news.category === activeFilter);
+                    
+                    // S'il y a encore des articles à charger
+                    if (filteredNews.length > displayedArticles) {
+                        loadMoreArticles();
+                    }
+                }
+            });
+        }
+
+        function getCategoryEmoji(category) {
+            const emojis = {
+                politique: '🏛️',
+                technologie: '💻',
+                economie: '💰',
+                environnement: '🌱',
+                science: '🔬',
+                culture: '🎭',
+                sport: '⚽'
+            };
+            return emojis[category] || '📰';
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                politique: 'Politique',
+                technologie: 'Technologie',
+                economie: 'Économie',
+                environnement: 'Environnement',
+                science: 'Science',
+                culture: 'Culture',
+                sport: 'Sport'
+            };
+            return names[category] || 'Actualité';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            
+            if (diffHours < 1) {
+                return 'Il y a moins d\'1h';
+            } else if (diffHours < 24) {
+                return `Il y a ${diffHours}h`;
+            } else {
+                const diffDays = Math.floor(diffHours / 24);
+                if (diffDays === 1) {
+                    return 'Hier';
+                } else if (diffDays < 7) {
+                    return `Il y a ${diffDays} jours`;
+                } else {
+                    return date.toLocaleDateString('fr-FR');
+                }
+            }
+        }
+
+        // Initialisation automatique au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌍 Earth Patchnotes RSS automatique - Démarrage');
+            updateTime();
+            loadNews();
+            startAutoRefresh();
+            setupInfiniteScroll(); // Activer le scroll infini
+        });
+
+        // Démarrage immédiat si la page est déjà chargée
+        if (document.readyState !== 'loading') {
+            console.log('🌍 Earth Patchnotes RSS automatique - Démarrage immédiat');
+            updateTime();
+            loadNews();
+            startAutoRefresh();
+            setupInfiniteScroll(); // Activer le scroll infini
+        }
+    </script>
+</body>
+</html>
